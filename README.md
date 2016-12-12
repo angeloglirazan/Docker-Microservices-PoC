@@ -114,7 +114,7 @@ Use Dockerfile command to install PHP extensions:
 
 ## Lumen/Laravel
 
-*(.dockerignore and updating via Composer must be implemented)*
+*(.dockerignore and updating via Composer must be implemented). In the meanwhile, `composer install` must be manually run in the Lumen container directory.*
 
 Make sure the DocumentRoot for the container is set to the public folder, or else you will run into [problems with the request not being properly handled.](http://stackoverflow.com/questions/29728973/notfoundhttpexception-with-lumen)
 
