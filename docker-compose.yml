@@ -1,0 +1,28 @@
+version: '2'
+services:
+  rabbitmq:
+    image: rabbitmq:3
+    networks:
+      web:
+        aliases:
+          - rabbitmq
+      receiver_nw:
+        aliases:
+          - rabbitmq
+  receiver-service:
+    build:
+      context: ./receive-rb
+    networks:
+      - receiver_nw
+  web:
+    build:
+      context: ./sender-lumen
+    ports:
+      - "8000:80"
+    networks:
+      - web
+networks:
+  web:
+    driver: bridge
+  receiver_nw:
+    driver: bridge
