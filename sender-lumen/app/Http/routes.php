@@ -17,12 +17,16 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
 $app->get('/', function () use ($app) {
-    $connection = new AMQPStreamConnection('rabbitmq', 5672, 'guest', 'guest');
-    $channel = $connection->channel();
-    $channel->queue_declare('hello', false, false, false, false);
-    $msg = new AMQPMessage('Hello from Lumen!');
-    $channel->basic_publish($msg, '', 'hello');
-    echo " [x] Sent 'Hello from Lumen!'\n";
-    $channel->close();
-    $connection->close();
+  $connection = new AMQPStreamConnection('rabbitmq', 5672, 'guest', 'guest');
+  $channel = $connection->channel();
+  $channel->queue_declare('hello', false, false, false, false);
+  $msg = new AMQPMessage('Hello from Lumen!');
+  $channel->basic_publish($msg, '', 'hello');
+  echo " [x] Sent 'Hello from Lumen!'\n";
+  $channel->close();
+  $connection->close();
+});
+
+$app->get('hello', function () use ($app) {
+  echo "Hello World";
 });

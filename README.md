@@ -112,11 +112,35 @@ Use Dockerfile command to override virtual host DocumentRoot:
 Use Dockerfile command to install PHP extensions:  
 `RUN docker-php-ext-install bcmath`
 
+### Using `composer install` requires setup
+
+No setup work should be required outside of building the container, so all dependencies should be installed during container setup. In this example, the `vendor` directory that contains all of the project's `composer` dependencies is ignored in the `.dockerignore` file.
+
+    RUN apt-get update \
+      && apt-get install git-core zlib1g-dev --no-install-recommends -y \
+      && rm -r /var/lib/apt/lists/*
+    RUN docker-php-ext-install zip
+
+Run `apt-get install` for:  
+`git-core` - required by `composer install` as source  
+`zlib1g-dev` - required by PHP extension `zip` (above)
+
+Below, `composer` is installed. Also, `composer install` is executed:
+
+    RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    RUN php composer-setup.php
+    RUN php -r "unlink('composer-setup.php');"
+    RUN mv composer.phar /usr/local/bin/composer
+
+    RUN composer install -d /var/www/html
+
+The `-d` argument of `composer install` allows you to specify a directory; choose the directory that contains your `composer.json` file.
+
 ## Lumen/Laravel
 
-*(.dockerignore and updating via Composer must be implemented). In the meanwhile, `composer install` must be manually run in the Lumen container directory.*
-
 Make sure the DocumentRoot for the container is set to the public folder, or else you will run into [problems with the request not being properly handled.](http://stackoverflow.com/questions/29728973/notfoundhttpexception-with-lumen)
+
+*Missing: Connect this project to a database through ENV variables*
 
 ## Ruby (Vanilla)
 
